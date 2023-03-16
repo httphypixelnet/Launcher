@@ -6,6 +6,7 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,23 +31,8 @@ public class Utils {
     public static final String AUTH_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize/";
     public static final String SCOPE = "XboxLive.signin offline_access";
     public static final String CLIENT_ID = "41bf7724-369e-4223-996c-88e62ce3d151";
-    public static final String REDIRECT_URL = "http://localhost/auth-response";
+    public static final String REDIRECT_URL = "http://localhost:8000/auth-response";
 
-    public static void main(String[] args) throws NoSuchAlgorithmException, IOException, ParseException {
-        String[] l = getSecureLoginData(CLIENT_ID,REDIRECT_URL,null);
-        String login_url = l[0];
-        String state = l[1];
-        String codeVerifier = l[2];
-
-        System.out.println(login_url);
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter authorization code: ");
-        String authCode = scanner.nextLine();
-        System.out.println("Authorization code entered is: " + authCode);
-
-
-        System.out.println(getAuthorizationToken(CLIENT_ID,null,REDIRECT_URL,authCode,codeVerifier));
-    }
 
     public static String[] getSecureLoginData(String clientId, String redirectUri, String state) throws NoSuchAlgorithmException {
         String codeVerifier = generateCodeVerifier();
@@ -93,7 +79,7 @@ public class Utils {
     }
 
     public static String getAuthorizationToken(String clientId, String clientSecret, String redirectUri, String authCode, String codeVerifier) throws IOException, ParseException {
-        String parameters = "?client_id=" + URLEncoder.encode(clientId, StandardCharsets.UTF_8)
+        String parameters = "client_id=" + URLEncoder.encode(clientId, StandardCharsets.UTF_8)
                 + "&scope=" + URLEncoder.encode("XboxLive.signin offline_access", StandardCharsets.UTF_8)
                 + "&code=" + URLEncoder.encode(authCode, StandardCharsets.UTF_8)
                 + "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8)
@@ -109,14 +95,15 @@ public class Utils {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
-        HttpPost httpPost = new HttpPost(TOKEN_URL+parameters);
+        HttpPost httpPost = new HttpPost(TOKEN_URL);
 
         httpPost.setHeader("Content-Type","application/x-www-form-urlencoded");
         httpPost.setHeader("user-agent", "minecraft-launcher-lib/5.2");
         httpPost.setHeader("Origin", "https://localhost");
+        StringEntity params = new StringEntity(parameters);
+        httpPost.setEntity(params);
         CloseableHttpResponse response = httpClient.execute(httpPost);
-        System.out.println(EntityUtils.toString(response.getEntity()));
 
-        return response.toString();
+        return EntityUtils.toString(response.getEntity());
     }
 }
