@@ -110,6 +110,7 @@ public class Utils {
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
         HttpPost httpPost = new HttpPost(TOKEN_URL+parameters);
+
         httpPost.setHeader("Content-Type","application/x-www-form-urlencoded");
         httpPost.setHeader("user-agent", "minecraft-launcher-lib/5.2");
         httpPost.setHeader("Origin", "https://localhost");
