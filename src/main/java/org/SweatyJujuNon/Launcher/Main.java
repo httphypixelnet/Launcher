@@ -7,12 +7,14 @@ import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.core5.http.ParseException;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -289,7 +291,8 @@ public class Main {
         String state = data[1];
         String codeVerifier = data[2];
 
-        System.out.println(login_url);
+        Desktop desktop = Desktop.getDesktop();
+        desktop.browse(new URI(login_url));
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
         server.createContext("/", new AuthCodeHandler(codeVerifier));
