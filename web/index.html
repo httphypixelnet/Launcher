@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html data-color-mode="dark" data-dark-theme="dark_dimmed">
+<head>
+<link href="launcher.css" rel="stylesheet"/>
+<link href="primer.css" rel="stylesheet"/>
+<link href="colorfilters.css" rel="stylesheet"/>
+<link href="blob.css" rel="stylesheet"/>
+<title>Launcher</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+<div class="anim-pulse" id="blob"></div>
+<div id="blur"></div>
+<script type="text/javascript" src="blob.js"></script>
+<div class="Header p-1 z-3">
+	<a href="tweaks.html" class="btn btn-outline color-bg-accent p-1 Header-item tooltipped tooltipped-se tooltipped-no-delay anim-scale-in z-3 anim-hover-grow" type="button" aria-label="Menu"><img src="assets/stack.svg" class="filter-white"/></a>
+	<a href="tweaks.html" class="btn btn-outline color-bg-accent p-1 Header-item tooltipped tooltipped-se tooltipped-no-delay anim-scale-in z-3 anim-hover-grow" type="button" aria-label="Accounts"><img src="assets/person.svg" class="filter-white"/></a>
+	<a href="tweaks.html" class="btn btn-outline color-bg-accent p-1 Header-item tooltipped tooltipped-se tooltipped-no-delay anim-scale-in z-3 anim-hover-grow" type="button" aria-label="FAQ"><img src="assets/question.svg" class="filter-white"/></a>
+	<a href="tweaks.html" class="btn btn-outline color-bg-accent p-1 Header-item tooltipped tooltipped-se tooltipped-no-delay anim-scale-in z-3 anim-hover-grow" type="button" aria-label="Tweaks"><img src="assets/cpu.svg" class="filter-white"/></a>
+	<a href="tweaks.html" class="btn btn-outline color-bg-accent p-1 Header-item tooltipped tooltipped-se tooltipped-no-delay anim-scale-in z-3 anim-hover-grow" type="button" aria-label="Settings"><img src="assets/tools.svg" class="filter-white"/></a>
+    <h4 class="z-3">1.8.9</h4>
+</div>
+<div class="span-page container z-3">
+  <div class="launchbutton center" id="launch">
+    <button class="btn btn-outline btn-large color-bg-inset anim-hover-grow color-shadow-medium f1" type="button">Launch <img src="assets/rocket.svg" class="filter-white"/></button>
+    <div style="margin-bottom: 100px">
+      <details class="dropdown details-reset details-overlay d-inline-block">
+        <summary class="color-fg-accent p-2 d-inline" aria-haspopup="true"> <b>Version</b>
+          <div class="dropdown-caret"></div>
+        </summary>
+        <ul class="dropdown-menu dropdown-menu-se">
+          <li><a class="dropdown-item" href="#url">1.8.9</a></li>
+          <li><a class="dropdown-item" href="#url">1.12.2</a></li>
+          <li><a class="dropdown-item" href="#url">1.16.5</a></li>
+        </ul>
+      </details>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -29,6 +29,9 @@ public class AuthCodeHandler implements HttpHandler {
         if (requestMethod.equalsIgnoreCase("GET")) {
             // Extract request parameters
             URI uri = exchange.getRequestURI();
+            if (uri.getRawPath() != "/auth-response"){
+                return;
+            }
             String query = uri.getRawQuery();
             Map<String, String> params = parseQuery(query);
 

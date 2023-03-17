@@ -3,19 +3,15 @@ package org.SweatyJujuNon.Launcher;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.sun.net.httpserver.HttpServer;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.core5.http.ParseException;
 import org.json.JSONObject;
 
 import java.awt.*;
 import java.io.*;
 import java.net.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
