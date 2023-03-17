@@ -5,6 +5,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.sun.net.httpserver.HttpServer;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.core5.http.ParseException;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.net.*;
@@ -23,7 +24,7 @@ public class Main {
 
     public static final Gson gson = new Gson();
 
-    public static void main(String[] args) throws NullPointerException, IOException, InterruptedException, ParseException, NoSuchAlgorithmException {
+    public static void main(String[] args) throws Exception {
         ArrayList<Thread> threads = new ArrayList<>();
         URL url = new URL("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -283,10 +284,10 @@ public class Main {
         }
         reader.close();
         connection.disconnect();
-        String[] data1 = Utils.getSecureLoginData(CLIENT_ID, REDIRECT_URL, null);
-        String login_url = data1[0];
-        String state = data1[1];
-        String codeVerifier = data1[2];
+        String[] data = Utils.getSecureLoginData(CLIENT_ID, REDIRECT_URL, null);
+        String login_url = data[0];
+        String state = data[1];
+        String codeVerifier = data[2];
 
         System.out.println(login_url);
 
@@ -299,13 +300,22 @@ public class Main {
         }
 
         String authCode = AuthCodeHandler.getAuthCode();
-        System.out.println("Authorization code received is: " + authCode);
+        server.stop(0);
 
-        LinkedTreeMap data = gson.fromJson(Utils.getAuthorizationToken(CLIENT_ID, null, REDIRECT_URL, authCode, codeVerifier), LinkedTreeMap.class);
+        String token = Utils.getAuthorizationToken(CLIENT_ID, null, REDIRECT_URL, authCode, codeVerifier);
 
+        LinkedTreeMap xblRequest = Utils.authenticateWithXBL(token);
+        String xblToken = xblRequest.get("Token").toString();
+        String userhash = ((LinkedTreeMap)((ArrayList)((LinkedTreeMap)xblRequest.get("DisplayClaims")).get("xui")).get(0)).get("uhs").toString();
+
+        String xstsToken = Utils.authenticateWithXSTS(xblToken);
+
+        String accessToken = Utils.authenticateWithMinecraft(userhash,xstsToken).get("access_token").toString();
+
+        JSONObject profile = Utils.getMinecraftProfile(accessToken);
 
         server.stop(0);
-        List<String> launchCommand = Arrays.asList("java", "-Djava.library.path=$path/.minecraft/versions/1.8.9/natives", "-cp", "$path/.minecraft/libraries/com/mojang/netty/1.8.8/netty-1.8.8.jar;$path/.minecraft/libraries/oshi-project/oshi-core/1.1/oshi-core-1.1.jar;$path/.minecraft/libraries/net/java/dev/jna/jna/3.4.0/jna-3.4.0.jar;$path/.minecraft/libraries/net/java/dev/jna/platform/3.4.0/platform-3.4.0.jar;$path/.minecraft/libraries/com/ibm/icu/icu4j-core-mojang/51.2/icu4j-core-mojang-51.2.jar;$path/.minecraft/libraries/net/sf/jopt-simple/jopt-simple/4.6/jopt-simple-4.6.jar;$path/.minecraft/libraries/com/paulscode/codecjorbis/20101023/codecjorbis-20101023.jar;$path/.minecraft/libraries/com/paulscode/codecwav/20101023/codecwav-20101023.jar;$path/.minecraft/libraries/com/paulscode/libraryjavasound/20101123/libraryjavasound-20101123.jar;$path/.minecraft/libraries/com/paulscode/librarylwjglopenal/20100824/librarylwjglopenal-20100824.jar;$path/.minecraft/libraries/com/paulscode/soundsystem/20120107/soundsystem-20120107.jar;$path/.minecraft/libraries/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final.jar;$path/.minecraft/libraries/com/google/guava/guava/17.0/guava-17.0.jar;$path/.minecraft/libraries/org/apache/commons/commons-lang3/3.3.2/commons-lang3-3.3.2.jar;$path/.minecraft/libraries/commons-io/commons-io/2.4/commons-io-2.4.jar;$path/.minecraft/libraries/commons-codec/commons-codec/1.9/commons-codec-1.9.jar;$path/.minecraft/libraries/net/java/jinput/jinput/2.0.5/jinput-2.0.5.jar;$path/.minecraft/libraries/net/java/jutils/jutils/1.0.0/jutils-1.0.0.jar;$path/.minecraft/libraries/com/google/code/gson/gson/2.2.4/gson-2.2.4.jar;$path/.minecraft/libraries/com/mojang/authlib/1.5.21/authlib-1.5.21.jar;$path/.minecraft/libraries/com/mojang/realms/1.7.59/realms-1.7.59.jar;$path/.minecraft/libraries/org/apache/commons/commons-compress/1.8.1/commons-compress-1.8.1.jar;$path/.minecraft/libraries/org/apache/httpcomponents/httpclient/4.3.3/httpclient-4.3.3.jar;$path/.minecraft/libraries/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar;$path/.minecraft/libraries/org/apache/httpcomponents/httpcore/4.3.2/httpcore-4.3.2.jar;$path/.minecraft/libraries/org/apache/logging/log4j/log4j-api/2.0-beta9/log4j-api-2.0-beta9.jar;$path/.minecraft/libraries/org/apache/logging/log4j/log4j-core/2.0-beta9/log4j-core-2.0-beta9.jar;$path/.minecraft/libraries/org/lwjgl/lwjgl/lwjgl/2.9.4-nightly-20150209/lwjgl-2.9.4-nightly-20150209.jar;$path/.minecraft/libraries/org/lwjgl/lwjgl/lwjgl_util/2.9.4-nightly-20150209/lwjgl_util-2.9.4-nightly-20150209.jar;$path/.minecraft/libraries/org/lwjgl/lwjgl/lwjgl-platform/2.9.4-nightly-20150209/lwjgl-platform-2.9.4-nightly-20150209.jar;$path/.minecraft/libraries/org/lwjgl/lwjgl/lwjgl-platform/2.9.4-nightly-20150209/lwjgl-platform-2.9.4-nightly-20150209-natives-windows.jar;$path/.minecraft/libraries/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5.jar;$path/.minecraft/libraries/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5-natives-windows.jar;$path/.minecraft/libraries/tv/twitch/twitch/6.5/twitch-6.5.jar;$path/.minecraft/libraries/tv/twitch/twitch-platform/6.5/twitch-platform-6.5.jar;$path/.minecraft/libraries/tv/twitch/twitch-platform/6.5/twitch-platform-6.5-natives-windows-64.jar;$path/.minecraft/libraries/tv/twitch/twitch-external-platform/4.5/twitch-external-platform-4.5.jar;$path/.minecraft/libraries/tv/twitch/twitch-external-platform/4.5/twitch-external-platform-4.5-natives-windows-64.jar;$path/.minecraft/versions/1.8.9/1.8.9.jar", "net.minecraft.client.main.Main", "--username", "SweatyJujuNon", "--version", "1.8.9", "--gameDir", "$path/.minecraft", "--assetsDir", "$path/.minecraft/assets", "--assetIndex", "1.8", "--uuid", "f8f784d1-9b1a-45b1-a6a8-db1ac9a7011a", "--accessToken",data.get("access_token").toString(), "--userProperties", "{}", "--userType", "mojang");
+        List<String> launchCommand = Arrays.asList("java", "-Djava.library.path=$path/.minecraft/versions/1.8.9/natives", "-cp", "$path/.minecraft/libraries/com/mojang/netty/1.8.8/netty-1.8.8.jar;$path/.minecraft/libraries/oshi-project/oshi-core/1.1/oshi-core-1.1.jar;$path/.minecraft/libraries/net/java/dev/jna/jna/3.4.0/jna-3.4.0.jar;$path/.minecraft/libraries/net/java/dev/jna/platform/3.4.0/platform-3.4.0.jar;$path/.minecraft/libraries/com/ibm/icu/icu4j-core-mojang/51.2/icu4j-core-mojang-51.2.jar;$path/.minecraft/libraries/net/sf/jopt-simple/jopt-simple/4.6/jopt-simple-4.6.jar;$path/.minecraft/libraries/com/paulscode/codecjorbis/20101023/codecjorbis-20101023.jar;$path/.minecraft/libraries/com/paulscode/codecwav/20101023/codecwav-20101023.jar;$path/.minecraft/libraries/com/paulscode/libraryjavasound/20101123/libraryjavasound-20101123.jar;$path/.minecraft/libraries/com/paulscode/librarylwjglopenal/20100824/librarylwjglopenal-20100824.jar;$path/.minecraft/libraries/com/paulscode/soundsystem/20120107/soundsystem-20120107.jar;$path/.minecraft/libraries/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final.jar;$path/.minecraft/libraries/com/google/guava/guava/17.0/guava-17.0.jar;$path/.minecraft/libraries/org/apache/commons/commons-lang3/3.3.2/commons-lang3-3.3.2.jar;$path/.minecraft/libraries/commons-io/commons-io/2.4/commons-io-2.4.jar;$path/.minecraft/libraries/commons-codec/commons-codec/1.9/commons-codec-1.9.jar;$path/.minecraft/libraries/net/java/jinput/jinput/2.0.5/jinput-2.0.5.jar;$path/.minecraft/libraries/net/java/jutils/jutils/1.0.0/jutils-1.0.0.jar;$path/.minecraft/libraries/com/google/code/gson/gson/2.2.4/gson-2.2.4.jar;$path/.minecraft/libraries/com/mojang/authlib/1.5.21/authlib-1.5.21.jar;$path/.minecraft/libraries/com/mojang/realms/1.7.59/realms-1.7.59.jar;$path/.minecraft/libraries/org/apache/commons/commons-compress/1.8.1/commons-compress-1.8.1.jar;$path/.minecraft/libraries/org/apache/httpcomponents/httpclient/4.3.3/httpclient-4.3.3.jar;$path/.minecraft/libraries/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar;$path/.minecraft/libraries/org/apache/httpcomponents/httpcore/4.3.2/httpcore-4.3.2.jar;$path/.minecraft/libraries/org/apache/logging/log4j/log4j-api/2.0-beta9/log4j-api-2.0-beta9.jar;$path/.minecraft/libraries/org/apache/logging/log4j/log4j-core/2.0-beta9/log4j-core-2.0-beta9.jar;$path/.minecraft/libraries/org/lwjgl/lwjgl/lwjgl/2.9.4-nightly-20150209/lwjgl-2.9.4-nightly-20150209.jar;$path/.minecraft/libraries/org/lwjgl/lwjgl/lwjgl_util/2.9.4-nightly-20150209/lwjgl_util-2.9.4-nightly-20150209.jar;$path/.minecraft/libraries/org/lwjgl/lwjgl/lwjgl-platform/2.9.4-nightly-20150209/lwjgl-platform-2.9.4-nightly-20150209.jar;$path/.minecraft/libraries/org/lwjgl/lwjgl/lwjgl-platform/2.9.4-nightly-20150209/lwjgl-platform-2.9.4-nightly-20150209-natives-windows.jar;$path/.minecraft/libraries/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5.jar;$path/.minecraft/libraries/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5-natives-windows.jar;$path/.minecraft/libraries/tv/twitch/twitch/6.5/twitch-6.5.jar;$path/.minecraft/libraries/tv/twitch/twitch-platform/6.5/twitch-platform-6.5.jar;$path/.minecraft/libraries/tv/twitch/twitch-platform/6.5/twitch-platform-6.5-natives-windows-64.jar;$path/.minecraft/libraries/tv/twitch/twitch-external-platform/4.5/twitch-external-platform-4.5.jar;$path/.minecraft/libraries/tv/twitch/twitch-external-platform/4.5/twitch-external-platform-4.5-natives-windows-64.jar;$path/.minecraft/versions/1.8.9/1.8.9.jar", "net.minecraft.client.main.Main", "--username", profile.get("name").toString(), "--version", "1.8.9", "--gameDir", "$path/.minecraft", "--assetsDir", "$path/.minecraft/assets", "--assetIndex", "1.8", "--uuid", profile.get("id").toString(), "--accessToken",accessToken, "--userProperties", "{}", "--userType", "mojang");
         for (int i = 0; i < launchCommand.size(); i++) {
             String cmd = launchCommand.get(i);
             launchCommand.set(i, cmd.replace("$path", System.getProperty("user.dir")));
