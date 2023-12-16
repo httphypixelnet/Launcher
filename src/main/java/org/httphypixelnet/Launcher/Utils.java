@@ -1,4 +1,4 @@
-package org.SweatyJujuNon.Launcher;
+package org.httphypixelnet.Launcher;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;

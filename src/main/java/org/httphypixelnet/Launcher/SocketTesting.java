@@ -1,4 +1,4 @@
-package org.SweatyJujuNon.Launcher;
+package org.httphypixelnet.Launcher;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.sun.net.httpserver.HttpServer;
@@ -19,9 +19,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.SweatyJujuNon.Launcher.Launcher.*;
-import static org.SweatyJujuNon.Launcher.Utils.CLIENT_ID;
-import static org.SweatyJujuNon.Launcher.Utils.REDIRECT_URL;
+import static org.httphypixelnet.Launcher.Launcher.*;
+import static org.httphypixelnet.Launcher.Utils.CLIENT_ID;
+import static org.httphypixelnet.Launcher.Utils.REDIRECT_URL;
 
 public class SocketTesting extends WebSocketServer {
 

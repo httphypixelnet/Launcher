@@ -1,4 +1,4 @@
-package org.SweatyJujuNon.Launcher;
+package org.httphypixelnet.Launcher;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static org.SweatyJujuNon.Launcher.Utils.CLIENT_ID;
-import static org.SweatyJujuNon.Launcher.Utils.REDIRECT_URL;
+import static org.httphypixelnet.Launcher.Utils.CLIENT_ID;
+import static org.httphypixelnet.Launcher.Utils.REDIRECT_URL;
 
 public class Launcher {
 

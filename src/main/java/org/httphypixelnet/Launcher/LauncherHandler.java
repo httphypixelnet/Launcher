@@ -1,4 +1,4 @@
-package org.SweatyJujuNon.Launcher;
+package org.httphypixelnet.Launcher;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
