@@ -1,0 +1,11 @@
+.filter-white {
+	filter: invert(98%) sepia(6%) saturate(249%) hue-rotate(255deg) brightness(116%) contrast(88%);
+}
+
+.filter-twitterblue {
+	filter: invert(48%) sepia(19%) saturate(3601%) hue-rotate(174deg) brightness(106%) contrast(90%);
+}
+
+.filter-emerald {
+	filter: invert(63%) sepia(67%) saturate(356%) hue-rotate(87deg) brightness(94%) contrast(91%);
+}
